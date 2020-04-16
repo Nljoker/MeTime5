@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1055398623066",
+    "firebase_url": "https://metime-776c3.firebaseio.com",
+    "project_id": "metime-776c3",
+    "storage_bucket": "metime-776c3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1055398623066:android:6438cac02cca9660a92563",
+        "android_client_info": {
+          "package_name": "com.example.metime"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1055398623066-pdpht3a2nlsdg55ng8aph8o5hup3h375.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.metime",
+            "certificate_hash": "1d019d6b488fd7abc9a74a1873b137e9c16f44cc"
+          }
+        },
+        {
+          "client_id": "1055398623066-q93sfde2oe97cnp69e82b477rf3npkdc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBUYeNnPGtTISvFSD58wR_6Zrx9aktqqHE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1055398623066-q93sfde2oe97cnp69e82b477rf3npkdc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
