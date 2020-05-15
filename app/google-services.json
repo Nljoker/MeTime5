@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:1055398623066:android:6438cac02cca9660a92563",
         "android_client_info": {
-          "package_name": "com.example.metime"
+          "package_name": "com.superawesome.metime"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "1055398623066-pdpht3a2nlsdg55ng8aph8o5hup3h375.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.metime",
+            "package_name": "com.superawesome.metime",
             "certificate_hash": "1d019d6b488fd7abc9a74a1873b137e9c16f44cc"
           }
         },

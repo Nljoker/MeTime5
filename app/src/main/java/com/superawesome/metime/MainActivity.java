@@ -1,43 +1,120 @@
 package com.superawesome.metime;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NavUtils;
 
+import android.content.Intent;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigServerException;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
+import com.google.gson.internal.bind.ObjectTypeAdapter;
+import com.google.protobuf.StringValue;
+import com.google.protobuf.Value;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 
+import org.w3c.dom.Document;
 import org.w3c.dom.Text;
 
+import java.lang.ref.Reference;
+import java.lang.reflect.Array;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 private ArrayList<String> al;
 private ArrayAdapter<String> arrayAdapter;
 private int i;
 private FirebaseAnalytics mFirebaseAnalytics;
+private DatabaseReference swipeDb;
+private FirebaseAuth mAuth;
+private FirebaseUser mCurrentUser;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.app_menu, menu);
-        return true;
+        getMenuInflater().inflate(R.menu.app_menu, menu);
+        return true; //show menu options
+
     }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                return true; // go back to the first screen
+
+            case R.id.cardoverview:
+                startActivity(new Intent(this, cardviewactivity.class));
+                return true; //go to the screen where all the swiped right activities are stored
+
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        swipeDb = FirebaseDatabase.getInstance().getReference().child("Users");
+        final FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+
+
+        //Anonymous user login to be registered in Firebase
+        mAuth = FirebaseAuth.getInstance();
+        mCurrentUser = mAuth.getCurrentUser(); // save the UID of the user in users in Firebase without having to log in
+
+        final String UID = mAuth.getCurrentUser().getUid();
+        DatabaseReference currentUserDb = FirebaseDatabase.getInstance().getReference().child("Users").child("UID");
+        currentUserDb.setValue(UID); //save the User UID to the Firebase Realtime database
+
+
+        // Calling to the AdMob API to add advertisements to the banner in the main view.Gotta make that dough
+        // Change this to big cards in the future
         final AdView adView = findViewById(R.id.adView);
 
         final AdRequest adRequest = new AdRequest.Builder()
@@ -45,116 +122,32 @@ private FirebaseAnalytics mFirebaseAnalytics;
                 .build();
 
         adView.loadAd(adRequest);
+
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
 
-
-
-
         al = new ArrayList<>();
-        al.add("Support a local business by buying a voucher");
-        al.add("Do 10 push-ups and increase by 1 every day");
-        al.add("Learn to do 10 keepy-ups with a toilet rol");
-        al.add("Learn to do a handstand for 5 seconds or longer");
-        al.add("Organize an online pubquiz");
-        al.add("Make a cocktail");
-        al.add("Paint with Bob Ross");
-        al.add("Enjoy the Musée d’Orsay");
-        al.add("Experience the British Museum");
-        al.add("Have a karaoke night");
-        al.add("Try a fitness challenge");
-        al.add("Arrange a virtual houseparty");
-        al.add("Learn a language");
-        al.add("Cook something completely new");
-        al.add("Deep clean your house");
-        al.add("Buy more plants from your local florist");
-        al.add("Learn programming");
-        al.add("Understand nutrition and how food affects your body, health and mood");
-        al.add("Read or listen a book");
-        al.add("Try out a new hairstyle or experiment with your hair");
-        al.add("Do yoga (check out YouTube for tutorials)");
-        al.add("Give this app 5 stars on the play store!");
-        al.add("Look through old photos and videos");
-        al.add("Write a letter to your future self");
-        al.add("Create your own website");
-        al.add("Rearrange your furniture or redecorate your living space");
-        al.add("Reach out to a friend or relative you haven't seen in a while");
-        al.add("Learn how to draw");
-        al.add("If you can go outside, visit spots you haven't seen before");
-        al.add("Stage a photo shoot");
-        al.add("Do a full body home workout (See YouTube for Tutorials)");
-        al.add("Update your resume or LinkedIn");
-        al.add("Clean something in your place that you haven't in a while (inside of microwave, anyone?)");
-        al.add("Make a future finances plan");
-        al.add("Send a message to some one which you are grateful of");
-        al.add("Start a DIY project(Like this app)");
-        al.add("Clean your phone or phone case (Corona can be on there)");
-        al.add("Do 10 push-ups and increase by 5 every day");
-        al.add("Donate old clothes or other items to your local charity");
-        al.add("Get ahead on schoolwork or future projects");
-        al.add("Watch a favorite movie or a movie you haven't seen in a while");
-        al.add("Write love notes for your S.O");
-        al.add("Facetime/Videocall your friends or family");
-        al.add("Make a bucketlist of all the things you never thought you'd do");
-        al.add("Don't forget to drink water");
-        al.add("Start learning something new (See EDX for online classes)");
-        al.add("Grab a card and send your parents a handwritten note");
-        al.add("Set up an online dating profile for a website or app you’ve never tried before");
-        al.add("Learn to do meditation");
-        al.add("Water your plants and come back for more");
-        al.add("Wash your windows (Don't put your laptop in your bathtub)");
-        al.add("Support a local business by buying a voucher");
-        al.add("Read up on current events (See r/WorldNews on Reddit.com)");
-        al.add("Learn to do 10 keepy-ups with a toilet rol");
-        al.add("Bake a cake (Don't forget to watch your nutrition)");
-        al.add("Do a project you’ve been putting off for months");
-        al.add("Study a map of your neighborhood");
-        al.add("Offer your help to a friend in need");
-        al.add("Go through the photos on your phone");
-        al.add("Teach yourself the army alphabet");
-        al.add("Learn the alphabet backwards");
-        al.add("Organize the apps on your phone");
-        al.add("Google adorable baby animal photos");
-        al.add("Figure out a way to make more money");
-        al.add("Start an Instagram feed for your pet (Your S.O. is not a pet)");
-        al.add("Drink a full glass of water, NOW!");
-        al.add("Put together an epic puzzle");
-        al.add("Put up an ad to do groceries for people who can't");
-        al.add("Sing along to some Disney songs");
-        al.add("Watch a rom-com marathon");
-        al.add("Try to mimic the voice of John Wick");
-        al.add("Plan your next getaway");
-        al.add("Build a fort made of your couch and blankets");
-        al.add("Watch a performance");
-        al.add("Find YouTube videos with a low number in views");
-        al.add("Learn a dance (Looking at you Techno hippies)");
-        al.add("Listen to a new podcast");
-        al.add("Make a custom photo book");
-        al.add("Try a new recipe");
-        al.add("Take a bubble bath");
-        al.add("Shine the windows");
-        al.add("Organize your kitchen");
-        al.add("Clean out your closet");
-        al.add("Spot-treat your white shoes");
-        al.add("Listen to your favorite music");
-        al.add("Listen to a song you haven't listened to for a while");
-        al.add("Call your Best Friend");
-        al.add("Watch funny YouTube videos");
-        al.add("Clean your room");
-        al.add("Dance like there is no tomorrow");
-        al.add("Create a video and upload online");
-        al.add("Catch up on your favorite soap operas");
-        al.add("Start thinking of ways to save money");
-        al.add("Read a novel (And watch Lord of the Rings afterwards)");
-        al.add("Investigate whether investing in stocks (or cryptocurrencies) is something for you");
 
-
-
-        Collections.shuffle(al);
-
-        arrayAdapter = new ArrayAdapter<>(this, R.layout.item, R.id.name, al);
+       arrayAdapter = new ArrayAdapter<>(this, R.layout.item, R.id.name, al);
 
         SwipeFlingAdapterView flingContainer = (SwipeFlingAdapterView) findViewById(R.id.frame);
+
+        final DocumentReference docRef = db.collection("Something").document("oneThing");
+        docRef.get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(final DocumentSnapshot documentSnapshot) {
+                        Map<String, Object> map = documentSnapshot.getData();
+                        if (documentSnapshot.exists()) {
+                            for (int f = 1; f <= map.size(); f++) {
+                                String title = documentSnapshot.getString(String.valueOf(f));
+                                al.add(title);
+                                arrayAdapter.notifyDataSetChanged();
+                            } Collections.shuffle(al);
+
+                        }
+                    }
+                });
 
 
         flingContainer.setAdapter(arrayAdapter);
@@ -171,6 +164,11 @@ private FirebaseAnalytics mFirebaseAnalytics;
 
             @Override
             public void onLeftCardExit(Object dataObject) {
+                swipeDb.child(UID).child("SwipeLeft").setValue(true).toString();
+                Map<String, Object> card = new HashMap<>();
+                card.put(al.get(0), null);
+                db.collection("SwipeLeft").document(UID)
+                        .set(card, SetOptions.merge());
                 //Do something on the left!
                 //You also have access to the original object.
                 //If you want to use it just cast it (String) dataObject
@@ -180,16 +178,21 @@ private FirebaseAnalytics mFirebaseAnalytics;
             @Override
             public void onRightCardExit(Object dataObject) {
                 Toast.makeText(MainActivity.this, "I'm going to do this!", Toast.LENGTH_SHORT).show();
+                swipeDb.child(UID).child("SwipeRight").setValue(true).toString();
+                Map<String, Object> card = new HashMap<>();
+                card.put(al.get(0), null);
+                db.collection("SwipeRight").document(UID)
+                        .set(card, SetOptions.merge());
             }
 
             @Override
             public void onAdapterAboutToEmpty(int itemsInAdapter) {
                 // Ask for more data here
-                al.add("Do you have more ideas? Send an e-mail to themetimeapp@gmail.com");
+                al.add("Do you know any fun ideas people should do? Send an email to themetimeapp@gmail.com");
                 arrayAdapter.notifyDataSetChanged();
-                Log.d("List", "notified");
                 i++;
-            }
+
+        }
 
             @Override
             public void onScroll(float scrollProgressPercent) {
@@ -203,6 +206,5 @@ private FirebaseAnalytics mFirebaseAnalytics;
                 Toast.makeText(MainActivity.this, "Dude, SWIPE left OR right", Toast.LENGTH_SHORT).show();
             }
         });
-
     }
 }

@@ -31,15 +31,15 @@
                 android:scaleType="centerCrop">
             </ImageView>
 
-
             <TextView
                 android:id="@+id/name"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/browser_actions_context_menu_min_padding"
                 android:gravity="center"
                 android:textColor="@android:color/white"
                 android:textSize="30sp"
-                tools:text="Welcome" />
+                tools:text="Welcome"/>
 
             <View
         android:id="@+id/item_swipe_left_indicator"
@@ -47,7 +47,7 @@
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_margin="10dp"
-        android:background="#680303" />
+        android:background="#450303" />
 
     <View
         android:id="@+id/item_swipe_right_indicator"
@@ -55,7 +55,6 @@
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_margin="10dp"
-        android:layout_gravity="right"
         android:background="#5AF" />
         </FrameLayout>
 

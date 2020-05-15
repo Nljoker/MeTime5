@@ -3,17 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/item1"
-        android:icon="@drawable/ic_menu"
-        android:title="item 1"
-        app:showAsAction="ifRoom" />
-
-    <item
-        android:id="@+id/item2"
-        android:title="item 1"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/item3"
-        android:title="item 1"
-        app:showAsAction="never" />
+        android:id="@+id/cardoverview"
+        android:icon="@drawable/ic_whatshot_black_24dp"
+        android:title="My stored activities"
+        app:showAsAction="always" />
 </menu>

@@ -1,4 +1,4 @@
-//package com.example.metime;
+/*package com.superawesome.metime;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -12,7 +12,7 @@ import org.w3c.dom.Text;
 
 import java.util.List;
 
-/*public class arrayAdapter extends ArrayAdapter<cards> {
+public class arrayAdapter extends ArrayAdapter<cards> {
     Context context;
 
     public arrayAdapter(Context context, int resourceId, List<cards> items) {
@@ -25,11 +25,9 @@ import java.util.List;
         convertView = LayoutInflater.from(getContext()).inflate(R.layout.item, parent, false);
     }
         TextView name = (TextView) convertView.findViewById(R.id.name);
-        ImageView image = (ImageView) convertView.findViewById(R.id.image);
 
-        image.setImageResource(R.mipmap.ic_launcher);
+        name.setText(card_item.getName());
 
         return convertView;
     }
-}
-*/
+}*/
